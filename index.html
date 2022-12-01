@@ -33,7 +33,68 @@
     </tbody>
   </table>
   <button id="checkOut">Check Out</button>
+  <button id="checkIn">Check In</button>
 </div>
+
+<div>
+  <table class="table" id="scheduleTable">
+    <thead>
+    <tr>
+      <th>Vehicle:</th>
+      <th>Name:</th>
+      <th>Surname:</th>
+      <th>Telephone:</th>
+      <th>Address:</th>
+      <th>Return Time:</th>
+    </tr>
+    <tr id="inputDeliveryRow">
+      <td>
+        <label for="vehicleInput"></label>
+        <input type="text" id="vehicleInput" name="vehicleInput">
+      </td>
+      <td>
+        <label for="nameInput"></label>
+        <input type="text" id="nameInput" name="nameInput">
+        </td>
+        <td>
+        <label for="surnameInput"></label>
+        <input type="text" id="surnameInput" name="surnameInput">
+        </td>
+        <td>
+        <label for="telephoneInput"></label>
+        <input type="text" id="telephoneInput" name="telephoneInput">
+        </td>
+        <td>
+        <label for="addressInput"></label>
+        <input type="text" id="addressInput" name="addressInput">
+        </td>
+        <td>
+        <label for="returnTimeInput"></label>
+        <input type="text" id="returnTimeInput" name="returnTimeInput">
+        </td>
+    </tr>
+    </thead>
+  </table>
+  <button id="addDelivery">ADD</button>
+</div>
+
+<div>
+    <table class="table" id="deliveryTable">
+        <thead>
+          <tr>
+            <th>Vehicle:</th>
+            <th>Name:</th>
+            <th>Surname:</th>
+            <th>Telephone:</th>
+            <th>Address:</th>
+            <th>Return Time:</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <script src="./system.js"></script>

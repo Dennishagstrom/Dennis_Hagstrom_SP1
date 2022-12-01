@@ -11,51 +11,66 @@ class StaffMember extends Employee {
         this.picture = picture;
         this.email = email;
         this.status = "Not Assigned";
-        this.outTime;
-        this.duration;
-        this.ERT;
+        this.outTime = "";
+        this.duration = "";
+        this.ERT = "";
     }
 
-    checkOut(duration, ERT) {
-        if(!ERT) {
-            this.outTime = digitalClock("time");
-            this.ERT = ERT;
-            this.duration = this.outTime - digitalClock("time", ERT);
-            return this.status = "Out";
-        }
+    checkOut() {
+        this.status = "Out";
+        const outOfOfficeTime = prompt(`How long will ${this.name} be out of the office? Please enter in (HH:MM)`);
+        const timeAway = outOfOfficeTime.split(":");
+        const hours = parseInt(timeAway[0]);
+        const minutes = parseInt(timeAway[1]);
+        const seconds = hours * 60 * 60 + minutes * 60;
+        const outTime = new Date();
+        const ERT = new Date(outTime.getTime() + seconds * 1000);
+        const ERTHours = ERT.getHours();
+        const ERTMinutes = ERT.getMinutes();
+        const ERTSeconds = ERT.getSeconds();
+
+        // ASSIGN VALUES
+        this.outTime = digitalClock("time")
+        this.ERT = `${ERTHours}:${ERTMinutes}:${ERTSeconds}`;
+        console.log(this.ERT)
+        this.duration = timeDifference(ERT, outTime);
+
     }
 
     checkIn() {
         this.outTime = "";
-        this.ERT = "";
         this.duration = "";
+        this.ERT = "";
         return this.status = "In";
     }
 }
 
-function timeDifference(date1,date2) {
-    const difference = date1.getTime() - date2.getTime();
 
-    const daysDifference = Math.floor(difference/1000/60/60/24);
-    difference -= daysDifference*1000*60*60*24
+class DeliveryDriver extends Employee {
+    constructor(name, surname, vehicle, telephone, deliverAddress, returnTime) {
+        super(name, surname);
+        this.vehicle = vehicle;
+        this.telephone = telephone;
+        this.deliverAddress = deliverAddress;
+        this.returnTime = returnTime;
+    }
+
+}
+
+function timeDifference(date1,date2) {
+    let difference = date1.getTime() - date2.getTime();
 
     const hoursDifference = Math.floor(difference/1000/60/60);
     difference -= hoursDifference*1000*60*60
 
     const minutesDifference = Math.floor(difference/1000/60);
-    difference -= minutesDifference*1000*60
 
-    const secondsDifference = Math.floor(difference/1000);
-
-    console.log('difference = ' +
-        daysDifference + ' day/s ' +
-        hoursDifference + ' hour/s ' +
-        minutesDifference + ' minute/s ' +
-        secondsDifference + ' second/s ');
+    return hoursDifference + ' hour/s ' +
+        minutesDifference + ' minute/s ';
 }
 
 
-function digitalClock(type, calculation) {
+function digitalClock(type) {
 
     let date = new Date();
     let day = date.getDate();
@@ -81,27 +96,18 @@ function digitalClock(type, calculation) {
         month = "0" + month;
     }
 
-    if(!calculation) {
-
-        if (type === "date") {
-            return day + "/" + month + "/" + year;
-        }
-
-        if (type === "time") {
-            return hour + ":" + minute + ":" + second;
-        }
-
-        if (type === "dateTime") {
-            return day + "/" + month + "/" + year + " " + hour + ":" + minute + ":" + second
-        }
-
-    } else {
-        // calculation is the number of hours and minutes the staff member is out
-        // calculate the duration of the staff member being out
-        // calculate the time the staff member is expected to be back
-
-
+    if (type === "date") {
+        return day + "/" + month + "/" + year;
     }
+
+    if (type === "time") {
+        return hour + ":" + minute + ":" + second;
+    }
+
+    if (type === "dateTime") {
+        return day + "/" + month + "/" + year + " " + hour + ":" + minute + ":" + second
+    }
+
 }
 
 const employees = {
@@ -114,6 +120,7 @@ async function getUsers() {
 
     for (let i = 0; i < numberOfEmployees; i++) {
         await $.ajax({
+                type: "GET",
                 url: 'https://randomuser.me/api/',
                 dataType: 'json',
                 success: function (data) {
@@ -175,21 +182,65 @@ $("document").ready( async function () {
             $("#ERT" + i).html(staffMembers[i].ERT);
             $("#input" + i).prop("checked", false);
         }
-
-
-        // const userToChange = parseInt(prompt("Enter the employee to check out")) - 1;
-        // if(userToChange > staffMembers.length - 1 || userToChange < 0) {
-        //     console.log("User not found");
-        //     return;
-        // }
-        // const duration = prompt("How long will the staff member be out? Enter in H:M:S format");
-
-    //     const staffMember = staffMembers[userToChange];
-    //     staffMember.checkOut();
-
     });
+
+    $("#checkIn").click(function () {
+        let checked = $("input:checked").length;
+        if (!checked) {
+            console.log("Nothing checked");
+        }
+
+        for(let i = 0; i < staffMembers.length; i++) {
+            $("#input" + i).is(":checked") ? staffMembers[i].checkIn() : null;
+            $("#status" + i).html(staffMembers[i].status);
+            $("#outTime" + i).html(staffMembers[i].outTime);
+            $("#duration" + i).html(staffMembers[i].duration);
+            $("#ERT" + i).html(staffMembers[i].ERT);
+            $("#input" + i).prop("checked", false);
+        }
+    });
+
+    $("#addDelivery").click(function () {
+        const vehicle = $("#vehicleInput").val();
+        const telephone = $("#telephoneInput").val();
+        const deliverAddress = $("#deliverAddressInput").val();
+        const returnTime = $("#returnTimeInput").val();
+        const name = $("#nameInput").val();
+        const surname = $("#surnameInput").val();
+
+        const newDeliveryDriver = new DeliveryDriver(name, surname, vehicle, telephone, deliverAddress, returnTime);
+        employees.deliveryDrivers.push(newDeliveryDriver)
+        console.log(employees.deliveryDrivers);
+    })
+
+    console.log(employees)
 });
 
 
 
 
+
+
+
+$("document").ready(function () {
+
+    const staffMembers = [];
+
+    for (let i = 0; i < 5; i++) {
+        $.ajax({
+            url: "https://randomuser.me/api/",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                const user = data.results[0];
+                const picture = user.picture.large;
+                const name = user.name.first;
+                const surname = user.name.last;
+                const email = user.email;
+                const newStaff = new StaffMember(name, surname, picture, email);
+                staffMembers.push(newStaff);
+                console.log(newStaff);
+            }
+        });
+    }
+});
