@@ -1,22 +1,62 @@
 class Employee {
-    constructor(picture, firstName, lastName, email) {
-        this.picture = picture;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.isCheckedIn = true;
-    }
-
-    checkOut() {
-        this.isCheckedIn = false;
-    }
-
-    checkIn() {
-        this.isCheckedIn = true;
+    constructor(name, surname) {
+        this.name = name;
+        this.surname = surname;
     }
 }
 
-function dateFinder() {
+class StaffMember extends Employee {
+    constructor(name, surname, picture, email) {
+        super(name, surname);
+        this.picture = picture;
+        this.email = email;
+        this.status = "Not Assigned";
+        this.outTime;
+        this.duration;
+        this.ERT;
+    }
+
+    checkOut(duration, ERT) {
+        if(!ERT) {
+            this.outTime = digitalClock("time");
+            this.ERT = ERT;
+            this.duration = this.outTime - digitalClock("time", ERT);
+            return this.status = "Out";
+        }
+    }
+
+    checkIn() {
+        this.outTime = "";
+        this.ERT = "";
+        this.duration = "";
+        return this.status = "In";
+    }
+}
+
+function timeDifference(date1,date2) {
+    const difference = date1.getTime() - date2.getTime();
+
+    const daysDifference = Math.floor(difference/1000/60/60/24);
+    difference -= daysDifference*1000*60*60*24
+
+    const hoursDifference = Math.floor(difference/1000/60/60);
+    difference -= hoursDifference*1000*60*60
+
+    const minutesDifference = Math.floor(difference/1000/60);
+    difference -= minutesDifference*1000*60
+
+    const secondsDifference = Math.floor(difference/1000);
+
+    console.log('difference = ' +
+        daysDifference + ' day/s ' +
+        hoursDifference + ' hour/s ' +
+        minutesDifference + ' minute/s ' +
+        secondsDifference + ' second/s ');
+}
+
+
+function digitalClock(type, calculation) {
+
     let date = new Date();
     let day = date.getDate();
     let month = date.getMonth() + 1;
@@ -41,11 +81,35 @@ function dateFinder() {
         month = "0" + month;
     }
 
-    return day + "/" + month + "/" + year + " " + hour + ":" + minute + ":" + second
+    if(!calculation) {
+
+        if (type === "date") {
+            return day + "/" + month + "/" + year;
+        }
+
+        if (type === "time") {
+            return hour + ":" + minute + ":" + second;
+        }
+
+        if (type === "dateTime") {
+            return day + "/" + month + "/" + year + " " + hour + ":" + minute + ":" + second
+        }
+
+    } else {
+        // calculation is the number of hours and minutes the staff member is out
+        // calculate the duration of the staff member being out
+        // calculate the time the staff member is expected to be back
+
+
+    }
 }
 
-async function getEmployees() {
-    const employees = [];
+const employees = {
+    "staffMembers": [],
+    "deliveryDrivers": []
+};
+
+async function getUsers() {
     const numberOfEmployees = 5;
 
     for (let i = 0; i < numberOfEmployees; i++) {
@@ -55,11 +119,11 @@ async function getEmployees() {
                 success: function (data) {
                     const employee = data.results[0];
                     const picture = employee.picture.large;
-                    const firstName = employee.name.first;
-                    const lastName = employee.name.last;
+                    const name = employee.name.first;
+                    const surname = employee.name.last;
                     const email = employee.email;
-                    const newEmployee = new Employee(picture, firstName, lastName, email);
-                    employees.push(newEmployee);
+                    const newEmployee = new StaffMember(name, surname, picture, email);
+                    employees.staffMembers.push(newEmployee);
                 }
             }
         )
@@ -67,25 +131,65 @@ async function getEmployees() {
     return employees;
 }
 
-function populateTable() {
-    getEmployees()
-        .then(employees => {
-            employees.forEach(employee => {
-                $("#employeeTable tbody").append(
-                    `<tr>
-                    <td><img src="${employee.picture}" alt="employee picture"></td>
-                    <td>${employee.firstName}</td>
-                    <td>${employee.lastName}</td>
-                    <td>${employee.email}</td>
-                    <td>${employee.isCheckedIn}</td>
-                </tr>`
-                );
-            });
-        })
+function populateStaffTable() {
+    for (let i = 0; i < employees.staffMembers.length; i++) {
+        let staffMember = employees.staffMembers[i];
+        $("#employeeTable tbody").append(
+            `<tr id="row${i}">
+            <td><input type="checkbox" id="input${i}" name="check${i}"/></td>
+            <td id="picture${i}"><img src="${staffMember.picture}" alt="employee picture"></td>
+            <td id="name${i}">${staffMember.name}</td>
+            <td id="surname${i}">${staffMember.surname}</td>
+            <td id="email${i}">${staffMember.email}</td>
+            <td id="status${i}">${staffMember.status}</td>
+            <td id="outTime${i}">${staffMember.outTime}</td>
+            <td id="duration${i}">${staffMember.duration}</td>
+            <td id="ERT${i}">${staffMember.ERT}</td>
+            </tr>`
+        );
+    }
 }
 
-$("document").ready( function () {
-    populateTable();
+$("document").ready( async function () {
+
+    // GET USERS FROM API
+    await getUsers()
+
+    const staffMembers = employees.staffMembers;
+
+    // POPULATE STAFF TABLE
+    populateStaffTable();
+
+    // CHECK OUT A STAFF MEMBER AND UPDATE THE TABLE
+    $("#checkOut").click(function () {
+        let checked = $("input:checked").length;
+        if (!checked) {
+            console.log("Nothing checked");
+        }
+
+        for(let i = 0; i < staffMembers.length; i++) {
+            $("#input" + i).is(":checked") ? staffMembers[i].checkOut() : null;
+            $("#status" + i).html(staffMembers[i].status);
+            $("#outTime" + i).html(staffMembers[i].outTime);
+            $("#duration" + i).html(staffMembers[i].duration);
+            $("#ERT" + i).html(staffMembers[i].ERT);
+            $("#input" + i).prop("checked", false);
+        }
+
+
+        // const userToChange = parseInt(prompt("Enter the employee to check out")) - 1;
+        // if(userToChange > staffMembers.length - 1 || userToChange < 0) {
+        //     console.log("User not found");
+        //     return;
+        // }
+        // const duration = prompt("How long will the staff member be out? Enter in H:M:S format");
+
+    //     const staffMember = staffMembers[userToChange];
+    //     staffMember.checkOut();
+
+    });
 });
+
+
 
 
