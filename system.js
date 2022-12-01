@@ -157,6 +157,39 @@ function populateStaffTable() {
     }
 }
 
+function addDeliveryToTable(vehicle, name, surname, telephone, deliveryAddress, returnTime) {
+    $("#deliveryTable tbody").append(
+        `<tr id="row${employees.deliveryDrivers.length}">
+            <td id="vehicle${employees.deliveryDrivers.length}">${vehicle}</td>
+            <td id="name${employees.deliveryDrivers.length}">${name}</td>
+            <td id="surname${employees.deliveryDrivers.length}">${surname}</td>
+            <td id="telephone${employees.deliveryDrivers.length}">${telephone}</td>
+            <td id="deliveryAddress${employees.deliveryDrivers.length}">${deliveryAddress}</td>
+            <td id="returnTime${employees.deliveryDrivers.length}">${returnTime}</td>
+            </tr>`
+    );
+}
+
+
+function validation(vehicle, name, surname, telephone, deliverAddress, returnTime) {
+    const errorList = [];
+
+    if (vehicle === "" || name === "" || surname === "" || telephone === "" || deliverAddress === "" || returnTime === "") {
+        errorList.push("All fields must be filled");
+    }
+    if (!name.match(/^[a-zA-Z]+$/) || !surname.match(/^[a-zA-Z]+$/)) {
+        errorList.push("Name and surname must contain only letters");
+    }
+    if (!telephone.match(/^[0-9]+$/)) {
+        errorList.push("Telephone must contain only numbers, and cant be longer than 10 digits");
+    }
+    if (vehicle !== "car" && vehicle !== "motorcycle" && vehicle !== "bicycle") {
+        errorList.push("Vehicle must be Car, Motorcycle or Bicycle");
+    }
+    return errorList;
+
+}
+
 $("document").ready( async function () {
 
     // GET USERS FROM API
@@ -174,7 +207,7 @@ $("document").ready( async function () {
             console.log("Nothing checked");
         }
 
-        for(let i = 0; i < staffMembers.length; i++) {
+        for (let i = 0; i < staffMembers.length; i++) {
             $("#input" + i).is(":checked") ? staffMembers[i].checkOut() : null;
             $("#status" + i).html(staffMembers[i].status);
             $("#outTime" + i).html(staffMembers[i].outTime);
@@ -190,7 +223,7 @@ $("document").ready( async function () {
             console.log("Nothing checked");
         }
 
-        for(let i = 0; i < staffMembers.length; i++) {
+        for (let i = 0; i < staffMembers.length; i++) {
             $("#input" + i).is(":checked") ? staffMembers[i].checkIn() : null;
             $("#status" + i).html(staffMembers[i].status);
             $("#outTime" + i).html(staffMembers[i].outTime);
@@ -203,44 +236,19 @@ $("document").ready( async function () {
     $("#addDelivery").click(function () {
         const vehicle = $("#vehicleInput").val();
         const telephone = $("#telephoneInput").val();
-        const deliverAddress = $("#deliverAddressInput").val();
+        const deliveryAddress = $("#deliverAddressInput").val();
         const returnTime = $("#returnTimeInput").val();
         const name = $("#nameInput").val();
         const surname = $("#surnameInput").val();
-
-        const newDeliveryDriver = new DeliveryDriver(name, surname, vehicle, telephone, deliverAddress, returnTime);
-        employees.deliveryDrivers.push(newDeliveryDriver)
-        console.log(employees.deliveryDrivers);
-    })
-
-    console.log(employees)
-});
-
-
-
-
-
-
-
-$("document").ready(function () {
-
-    const staffMembers = [];
-
-    for (let i = 0; i < 5; i++) {
-        $.ajax({
-            url: "https://randomuser.me/api/",
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-                const user = data.results[0];
-                const picture = user.picture.large;
-                const name = user.name.first;
-                const surname = user.name.last;
-                const email = user.email;
-                const newStaff = new StaffMember(name, surname, picture, email);
-                staffMembers.push(newStaff);
-                console.log(newStaff);
+        const validate = validation(vehicle.toLowerCase(), name, surname, telephone, deliveryAddress, returnTime)
+        if (validate.length === 0) {
+            const newDeliveryDriver = new DeliveryDriver(vehicle, name, surname, telephone, deliveryAddress, returnTime);
+            addDeliveryToTable(vehicle, name, surname, telephone, deliveryAddress, returnTime);
+            employees.deliveryDrivers.push(newDeliveryDriver)
+        } else {
+            for(let i = 0; i < validate.length; i++){
+                alert(validate[i])
             }
-        });
-    }
+        }
+    });
 });
