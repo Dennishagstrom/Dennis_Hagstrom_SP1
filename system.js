@@ -18,21 +18,17 @@ class StaffMember extends Employee {
 
     checkOut() {
         this.status = "Out";
-        const outOfOfficeTime = prompt(`How long will ${this.name} be out of the office? Please enter in (HH:MM)`);
-        const timeAway = outOfOfficeTime.split(":");
-        const hours = parseInt(timeAway[0]);
-        const minutes = parseInt(timeAway[1]);
-        const seconds = hours * 60 * 60 + minutes * 60;
+        const outOfOfficeTime = prompt(
+            `How long will ${this.name} be out of the office? Please enter in (HH:MM)`
+        );
+
         const outTime = new Date();
-        const ERT = new Date(outTime.getTime() + seconds * 1000);
-        const ERTHours = ERT.getHours();
-        const ERTMinutes = ERT.getMinutes();
-        const ERTSeconds = ERT.getSeconds();
+        const calculatedTime = calculateTime(outOfOfficeTime);
+        const ERT = calculatedTime.ERT
 
         // ASSIGN VALUES
         this.outTime = digitalClock("time")
-        this.ERT = `${ERTHours}:${ERTMinutes}:${ERTSeconds}`;
-        console.log(this.ERT)
+        this.ERT = `${calculatedTime.ERTHours}:${calculatedTime.ERTMinutes}:${calculatedTime.ERTSeconds}`;
         this.duration = timeDifference(ERT, outTime);
 
     }
@@ -45,7 +41,6 @@ class StaffMember extends Employee {
     }
 }
 
-
 class DeliveryDriver extends Employee {
     constructor(name, surname, vehicle, telephone, deliverAddress, returnTime) {
         super(name, surname);
@@ -55,6 +50,30 @@ class DeliveryDriver extends Employee {
         this.returnTime = returnTime;
     }
 
+}
+
+function calculateTime(userPrompt) {
+    const timeAway = userPrompt.split(":");
+    const hours = parseInt(timeAway[0]);
+    const minutes = parseInt(timeAway[1]);
+    const seconds = hours * 60 * 60 + minutes * 60;
+    const outTime = new Date();
+    const ERT = new Date(outTime.getTime() + seconds * 1000);
+    let ERTHours = ERT.getHours();
+    let ERTMinutes = ERT.getMinutes();
+    let ERTSeconds = ERT.getSeconds();
+
+    if (ERTSeconds < 10) {
+        ERTSeconds = "0" + ERTSeconds;
+    }
+    if (ERTMinutes < 10) {
+        ERTMinutes = "0" + ERTMinutes;
+    }
+    if (ERTHours < 10) {
+        ERTHours = "0" + ERTHours;
+    }
+    return {ERT, ERTHours, ERTMinutes, ERTSeconds};
+    // return `${ERTHours}:${ERTMinutes}:${ERTSeconds}`;
 }
 
 function timeDifference(date1,date2) {
@@ -69,9 +88,7 @@ function timeDifference(date1,date2) {
         minutesDifference + ' minute/s ';
 }
 
-
 function digitalClock(type) {
-
     let date = new Date();
     let day = date.getDate();
     let month = date.getMonth() + 1;
@@ -143,8 +160,8 @@ function populateStaffTable() {
         let staffMember = employees.staffMembers[i];
         $("#employeeTable tbody").append(
             `<tr id="row${i}">
-            <td><input type="checkbox" id="input${i}" name="check${i}"/></td>
-            <td id="picture${i}"><img src="${staffMember.picture}" alt="employee picture"></td>
+            <td><input class="staffOut" type="checkbox" id="input${i}" name="check${i}"/></td>
+            <td id="picture${i}"><img src="${staffMember.picture}" heigth="50px" width="50px" alt="employee picture"></td>
             <td id="name${i}">${staffMember.name}</td>
             <td id="surname${i}">${staffMember.surname}</td>
             <td id="email${i}">${staffMember.email}</td>
@@ -160,16 +177,15 @@ function populateStaffTable() {
 function addDeliveryToTable(vehicle, name, surname, telephone, deliveryAddress, returnTime) {
     $("#deliveryTable tbody").append(
         `<tr id="row${employees.deliveryDrivers.length}">
-            <td id="vehicle${employees.deliveryDrivers.length}">${vehicle}</td>
-            <td id="name${employees.deliveryDrivers.length}">${name}</td>
-            <td id="surname${employees.deliveryDrivers.length}">${surname}</td>
-            <td id="telephone${employees.deliveryDrivers.length}">${telephone}</td>
-            <td id="deliveryAddress${employees.deliveryDrivers.length}">${deliveryAddress}</td>
-            <td id="returnTime${employees.deliveryDrivers.length}">${returnTime}</td>
-            </tr>`
+        <td id="vehicle${employees.deliveryDrivers.length}">${vehicle}</td>
+        <td id="name${employees.deliveryDrivers.length}">${name}</td>
+        <td id="surname${employees.deliveryDrivers.length}">${surname}</td>
+        <td id="telephone${employees.deliveryDrivers.length}">${telephone}</td>
+        <td id="deliveryAddress${employees.deliveryDrivers.length}">${deliveryAddress}</td>
+        <td id="returnTime${employees.deliveryDrivers.length}">${returnTime}</td>
+        </tr>`
     );
 }
-
 
 function validation(vehicle, name, surname, telephone, deliverAddress, returnTime) {
     const errorList = [];
@@ -190,21 +206,26 @@ function validation(vehicle, name, surname, telephone, deliverAddress, returnTim
 
 }
 
-$("document").ready( async function () {
+$("document").ready(async function () {
+
+    // Clock
+    setInterval(function () {
+        $("#date").html(digitalClock("dateTime"));
+    }, 1000);
 
     // GET USERS FROM API
     await getUsers()
 
-    const staffMembers = employees.staffMembers;
-
     // POPULATE STAFF TABLE
     populateStaffTable();
+
+    const staffMembers = employees.staffMembers;
 
     // CHECK OUT A STAFF MEMBER AND UPDATE THE TABLE
     $("#checkOut").click(function () {
         let checked = $("input:checked").length;
         if (!checked) {
-            console.log("Nothing checked");
+            alert("You must select at least one staff member to check out.");
         }
 
         for (let i = 0; i < staffMembers.length; i++) {
@@ -217,6 +238,7 @@ $("document").ready( async function () {
         }
     });
 
+    // CHECK IN A STAFF MEMBER AND UPDATE THE TABLE
     $("#checkIn").click(function () {
         let checked = $("input:checked").length;
         if (!checked) {
@@ -233,20 +255,29 @@ $("document").ready( async function () {
         }
     });
 
+    // ADD A DELIVERY TO THE DELIVERY TABLE
     $("#addDelivery").click(function () {
-        const vehicle = $("#vehicleInput").val();
+        let vehicle = $("#vehicleInput").val();
+        vehicle = vehicle.toLowerCase();
         const telephone = $("#telephoneInput").val();
         const deliveryAddress = $("#deliverAddressInput").val();
         const returnTime = $("#returnTimeInput").val();
         const name = $("#nameInput").val();
         const surname = $("#surnameInput").val();
-        const validate = validation(vehicle.toLowerCase(), name, surname, telephone, deliveryAddress, returnTime)
+        const validate = validation(vehicle, name, surname, telephone, deliveryAddress, returnTime)
         if (validate.length === 0) {
+            if(vehicle === "car"){
+                vehicle = "🚗"
+            } else if(vehicle === "motorcycle"){
+                vehicle = "🏍️"
+            } else if(vehicle === "bicycle"){
+                vehicle = "🚲"
+            }
             const newDeliveryDriver = new DeliveryDriver(vehicle, name, surname, telephone, deliveryAddress, returnTime);
             addDeliveryToTable(vehicle, name, surname, telephone, deliveryAddress, returnTime);
             employees.deliveryDrivers.push(newDeliveryDriver)
         } else {
-            for(let i = 0; i < validate.length; i++){
+            for (let i = 0; i < validate.length; i++) {
                 alert(validate[i])
             }
         }
