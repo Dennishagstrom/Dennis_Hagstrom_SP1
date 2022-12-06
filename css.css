@@ -1,3 +1,12 @@
+@font-face {
+    font-family: "Calibri";
+    src: url("fonts/calibri-regular.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Consolas";
+    src: url("fonts/CONSOLA.ttf") format("truetype");
+}
+
 .container {
     width: 100%;
     height: 100%;
@@ -5,29 +14,44 @@
     overflow: hidden;
 }
 
-.nav-bar {
- background-color: #0E8EA8;
+.footer {
+    bottom: 0;
+    width: 100%;
+    color: #212529;
+    font-family: Calibri;
+    font-size: 12px;
+    text-align: right;
+
 }
 
-.selected {
-    background-color: #f0f0f0;
+p {
+    font-family: Calibri;
 }
 
-.navbar {
-    background-color: #0E8EA8;
-}
+/*.navbar {*/
+/*    font-family: Consolas;*/
+/*}*/
 
-#divStaffMembers {
-    position: relative;
-}
+/*.nav-link {*/
+/*    background-color: #83D1E1;*/
+/*    color: #212529;*/
+/*}*/
 
-#divDeliveryBoard {
-    position: relative;
-}
+/*.dropdown-menu {*/
+/*    background-color: #0E8EA8;*/
+/*}*/
 
-#divScheduleDelivery {
-    position: relative;
-    margin: 50px 0px 20px 0px;
+
+/*#divStaffMembers, #divDeliveryBoard, #divScheduleDelivery {*/
+/*    border-collapse: separate;*/
+/*    position: relative;*/
+/*    border: 1px solid #0E8EA8;*/
+/*    border-radius: 5px;*/
+/*    overflow: hidden;*/
+/*}*/
+
+#staffMemberTable {
+    border-radius: 5px !important;
 }
 
 #date {
@@ -35,31 +59,37 @@
     margin-right: 15px;
 }
 
-.table {
-    border: solid 1px #0E8EA8;
-    border-radius: 15px;
+.rounded-table {
+    border-radius: 5px !important
 }
+
+/*.table {*/
+/*    border-collapse: separate;*/
+/*    margin-bottom: 0px;*/
+/*}*/
 
 td, tr {
     text-align: center;
     vertical-align: middle;
 }
 
-h3 {
-    text-align: center;
-    margin: 10px;
-}
 thead {
     background-color: #0E8EA8;
     color: #fff;
+    font-family: Consolas;
 }
 
 td {
     background-color: #83D1E1;
     color: #212529;
+    font-family: Calibri, Arial, serif;
 }
 
-#staffButtons {
+h3 {
+    text-align: center;
+}
+
+#staffButtons, #deliveryButtons, #scheduleButtons {
     width: 100%;
     position: relative;
 }

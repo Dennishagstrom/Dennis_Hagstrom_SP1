@@ -49,7 +49,7 @@ class StaffMember extends Employee {
     }
 
     staffMemberIsLate(staffMember) {
-        spawnToast(staffMember);
+        spawnStaffToast(staffMember);
         return this.isLate = true;
     }
 }
@@ -62,30 +62,55 @@ class DeliveryDriver extends Employee {
         this.telephone = telephone;
         this.deliverAddress = deliverAddress;
         this.returnTime = returnTime;
+        this.isLate = false;
     }
 
-    deliveryDriverIsLate() {
-
+    deliveryDriverIsLate(object) {
+        spawnDeliveryToast(object);
+        this.isLate = true;
     }
 }
 
-function spawnToast(object) {
+function spawnStaffToast(object) {
     if(object.isLate === false) {
     $("#toastDiv").append(`
         <div id="liveToast${object.id}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
           <div class="toast-header">
             <img src="${object.picture}" class="rounded me-2" height="40px" width="40px" alt="staffPicture">
-            <strong class="me-auto">${object.name} ${object.surname} is late!</strong>
+            <strong class="me-auto">Staff member is late!</strong>
             <small>${digitalClock("time")}</small>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
           </div>
           <div class="toast-body">
-            <p>Expected Return Time: ${object.ERT}</p>
-            <p>Out Time: ${object.outTime}</p>
-            <p>Duration: ${object.duration}</p>
+            <p><strong>${object.name} ${object.surname} is late!</strong></p>
+            <p><strong>Expected Return Time:</strong> ${object.ERT}</p>
+            <p><strong>Out Time:</strong> ${object.outTime}</p>
+            <p><strong>Duration:</strong> ${object.duration}</p>
           </div>
         </div>
         <br>`);
+
+        $(`#liveToast${object.id}`).toast('show');
+    }
+}
+
+function spawnDeliveryToast(object) {
+    if(object.isLate === false) {
+        $("#toastDiv").append(`
+        <div id="liveToast${object.id}" class="toast" style="backdrop-filter: blur(10px);" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header">
+            <p class="me-auto text-center">${object.vehicle}</p>
+            <strong class="me-auto">Delivery is late!</strong>
+            <small>${digitalClock("time")}</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body">
+            <p><strong>Delivery to ${object.deliverAddress} is running late.</strong></p>
+            <p><strong>Driver:</strong> ${object.name} ${object.surname}</p>
+            <p><strong>Return Time:</strong> ${object.returnTime}</p>
+            <p><strong>Phone:</strong> ${object.telephone}</p>
+          </div>
+        </div>`);
 
         $(`#liveToast${object.id}`).toast('show');
     }
@@ -189,6 +214,23 @@ function staffMemberRunningLate() {
     }
 }
 
+function deliveryDriverRunningLate() {
+    for(let i = 0; i < deliveryDrivers.length; i++) {
+        let deliveryDriver = deliveryDrivers[i]
+        if (deliveryDriver.returnTime) {
+            let currentTime = digitalClock("time");
+            currentTime = currentTime.split(":");
+            const currentHourInt = parseInt(currentTime[0]);
+            const currentMinuteInt = parseInt(currentTime[1]);
+            const returnTime = deliveryDriver.returnTime
+            if(currentMinuteInt > ERTMinuteInt) {
+                if (currentHourInt > ERTHourInt || currentHourInt === ERTHourInt) {
+                    deliveryDriver.deliveryDriverIsLate(deliveryDriver);
+                }
+            }
+        }
+    }
+}
 
 
 const employees = {
@@ -270,17 +312,27 @@ function addDeliveryToTable(deliveryDriver) {
 function validateDelivery(vehicle, name, surname, telephone, deliverAddress, returnTime) {
     const errorList = [];
 
-    if (vehicle === "" || name === "" || surname === "" || telephone === "" || deliverAddress === "" || returnTime === "") {
+    const returnTimeHourMinute = returnTime.split(":");
+
+    if (vehicle === "" || name === "" || surname === "" || telephone === "" || deliverAddress === "" || returnTimeHourMinute === "") {
         errorList.push("All fields must be filled");
     }
+
+    const returnTimeHour = returnTimeHourMinute[0];
+    const returnTimeMinute = returnTimeHourMinute[1];
+
+    if (returnTimeHour < 0 || returnTimeHour > 23 || returnTimeMinute < 0 || returnTimeMinute > 59 || returnTimeHour.length !== 2 || returnTimeMinute.length !== 2) {
+        errorList.push("Invalid return time. Please enter a valid time in the format HH:MM.");
+    }
+
     if (!name.match(/^[a-zA-Z]+$/) || !surname.match(/^[a-zA-Z]+$/)) {
         errorList.push("Name and surname must contain only letters");
     }
     if (!telephone.match(/^[0-9]+$/)) {
         errorList.push("Telephone must contain only numbers, and cant be longer than 10 digits");
     }
-    if (vehicle !== "car" && vehicle !== "motorcycle" && vehicle !== "bicycle") {
-        errorList.push("Vehicle must be Car, Motorcycle or Bicycle");
+    if (vehicle !== "car" && vehicle !== "motorcycle") {
+        errorList.push("Vehicle must be car or motorcycle");
     }
     return errorList;
 
@@ -302,7 +354,7 @@ $("document").ready(async function () {
     populateStaffTable();
 
     // CHECK IF STAFF MEMBER IS RUNNING LATE
-    setInterval(staffMemberRunningLate, 1000);
+    setInterval(staffMemberRunningLate, deliveryDriverRunningLate, 1000);
 
     // CHECK OUT A STAFF MEMBER AND UPDATE THE TABLE
     $("#checkOut").click(function () {
@@ -350,6 +402,7 @@ $("document").ready(async function () {
         const telephone = $("#telephoneInput").val();
         const deliveryAddress = $("#deliverAddressInput").val();
         const returnTime = $("#returnTimeInput").val();
+
         const name = $("#nameInput").val();
         const surname = $("#surnameInput").val();
         const validate = validateDelivery(
@@ -365,9 +418,8 @@ $("document").ready(async function () {
                 vehicle = "🚗"
             } else if (vehicle === "motorcycle") {
                 vehicle = "🏍️"
-            } else if (vehicle === "bicycle") {
-                vehicle = "🚲"
             }
+
             const newDeliveryDriver = new DeliveryDriver(
                 id,
                 name,
@@ -377,8 +429,8 @@ $("document").ready(async function () {
                 deliveryAddress,
                 returnTime
             );
+            newDeliveryDriver.deliveryDriverIsLate(newDeliveryDriver)
             addDeliveryToTable(newDeliveryDriver);
-            console.log(newDeliveryDriver);
             deliveryDrivers.push(newDeliveryDriver)
         } else {
             for (let i = 0; i < validate.length; i++) {
