@@ -70,23 +70,23 @@ class DeliveryDriver extends Employee {
 }
 
 function spawnToast(object) {
-    $("#toastDiv").append(`
-        <div class="toast-container position-fixed bottom-0 end-0 p-3">
-            <div id="liveToast${object.id}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-              <div class="toast-header">
-                <img src="${object.picture}" class="rounded me-2" height="40px" width="40px" alt="staffPicture">
-                <strong class="me-auto">${object.name} ${object.surname} is late!</strong>
-                <small></small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-              </div>
-              <div class="toast-body">
-                <p>Expected Return Time: ${object.ERT}</p>
-                <p>Out Time: ${object.outTime}</p>
-                <p>Duration: ${object.duration}</p>
-              </div>
-            </div>
-        </div>`);
     if(object.isLate === false) {
+    $("#toastDiv").append(`
+        <div id="liveToast${object.id}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header">
+            <img src="${object.picture}" class="rounded me-2" height="40px" width="40px" alt="staffPicture">
+            <strong class="me-auto">${object.name} ${object.surname} is late!</strong>
+            <small>${digitalClock("time")}</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body">
+            <p>Expected Return Time: ${object.ERT}</p>
+            <p>Out Time: ${object.outTime}</p>
+            <p>Duration: ${object.duration}</p>
+          </div>
+        </div>
+        <br>`);
+
         $(`#liveToast${object.id}`).toast('show');
     }
 }
@@ -315,6 +315,7 @@ $("document").ready(async function () {
             const id = $(this).parent().parent().attr("id")
             const staffMember = staffMembers.find(staffMember => staffMember.id === parseInt(id));
             staffMember.checkOut();
+            staffMember.staffMemberIsLate(staffMember);
             $("#status" + id).html(staffMember.status);
             $("#outTime" + id).html(staffMember.outTime);
             $("#duration" + id).html(staffMember.duration);
