@@ -19,15 +19,16 @@ class StaffMember extends Employee {
     }
 
     checkOut() {
-
         const timeOutOfOffice = prompt(
             `How long will ${this.name} be out of the office? Please enter in (HH:MM). Up to 24H.`);
         const timeAway = timeOutOfOffice.split(":");
+
         // Validate input HH:MM from user prompt
         if (timeAway.length !== 2 || timeAway[0].length !== 2 || timeAway[1].length !== 2 || timeAway[0] > 23 || timeAway[1] > 59 || timeAway[0] < 0 || timeAway[1] < 0) {
             alert("The time you have entered is not valid. Please try again.");
             return this.checkOut();
         }
+
         const outTime = new Date();
         const calculatedTime = calculateTime(timeOutOfOffice);
         const ERT = calculatedTime.ERT
@@ -141,14 +142,10 @@ function calculateTime(input) {
 
 function timeDifference(date1,date2) {
     let difference = date1.getTime() - date2.getTime();
-
     const hoursDifference = Math.floor(difference/1000/60/60);
-    difference -= hoursDifference*1000*60*60
-
+    difference -= hoursDifference*1000*60*60;
     const minutesDifference = Math.floor(difference/1000/60);
-
-    return hoursDifference + ' hour/s ' +
-        minutesDifference + ' minute/s ';
+    return hoursDifference + ' hour/s ' + minutesDifference + ' minute/s ';
 }
 
 function digitalClock(type) {
@@ -232,7 +229,7 @@ function deliveryDriverRunningLate() {
     }
 }
 
-
+// DATABASE
 const employees = {
     "staffMembers": [],
     "deliveryDrivers": []
@@ -241,8 +238,10 @@ const employees = {
 const staffMembers = employees.staffMembers;
 const deliveryDrivers = employees.deliveryDrivers;
 
+// ALL UNIQUE ID'S
 const all_id = [];
 
+// GENERATE RANDOM ID FOR OBJECTS
 function randomId() {
     let randomId = Math.floor(Math.random() * 10000);
     while (all_id.includes(randomId)) {
@@ -252,9 +251,8 @@ function randomId() {
     return randomId;
 }
 
-async function getUsers() {
+async function staffUserGet() {
     const numberOfEmployees = 5;
-
     for (let i = 0; i < numberOfEmployees; i++) {
         await $.ajax({
                 type: "GET",
@@ -311,7 +309,6 @@ function addDeliveryToTable(deliveryDriver) {
 
 function validateDelivery(vehicle, name, surname, telephone, deliverAddress, returnTime) {
     const errorList = [];
-
     const returnTimeHourMinute = returnTime.split(":");
 
     if (vehicle === "" || name === "" || surname === "" || telephone === "" || deliverAddress === "" || returnTimeHourMinute === "") {
@@ -324,7 +321,6 @@ function validateDelivery(vehicle, name, surname, telephone, deliverAddress, ret
     if (returnTimeHour < 0 || returnTimeHour > 23 || returnTimeMinute < 0 || returnTimeMinute > 59 || returnTimeHour.length !== 2 || returnTimeMinute.length !== 2) {
         errorList.push("Invalid return time. Please enter a valid time in the format HH:MM.");
     }
-
     if (!name.match(/^[a-zA-Z]+$/) || !surname.match(/^[a-zA-Z]+$/)) {
         errorList.push("Name and surname must contain only letters");
     }
@@ -335,12 +331,9 @@ function validateDelivery(vehicle, name, surname, telephone, deliverAddress, ret
         errorList.push("Vehicle must be car or motorcycle");
     }
     return errorList;
-
 }
 
 $("document").ready(async function () {
-
-    $('.toast').toast('show')
 
     // Clock
     setInterval(function () {
@@ -348,7 +341,7 @@ $("document").ready(async function () {
     }, 1000);
 
     // GET USERS FROM API
-    await getUsers()
+    await staffUserGet()
 
     // POPULATE STAFF TABLE
     populateStaffTable();
@@ -363,6 +356,7 @@ $("document").ready(async function () {
             alert("You must select at least one staff member to check out.");
         }
 
+        // CHECK OUT SELECTED STAFF MEMBERS
         $("#staffMemberTable input:checked").each(function () {
             const id = $(this).parent().parent().attr("id")
             const staffMember = staffMembers.find(staffMember => staffMember.id === parseInt(id));
@@ -382,6 +376,8 @@ $("document").ready(async function () {
         if (!checked) {
             console.log("You must select at least one staff member to check in.");
         }
+
+        // CHECK IN SELECTED STAFF MEMBERS
         $("#staffMemberTable input:checked").each(function () {
             const id = $(this).parent().parent().attr("id")
             const staffMember = staffMembers.find(staffMember => staffMember.id === parseInt(id));
@@ -402,7 +398,6 @@ $("document").ready(async function () {
         const telephone = $("#telephoneInput").val();
         const deliveryAddress = $("#deliverAddressInput").val();
         const returnTime = $("#returnTimeInput").val();
-
         const name = $("#nameInput").val();
         const surname = $("#surnameInput").val();
         const validate = validateDelivery(
@@ -413,6 +408,7 @@ $("document").ready(async function () {
             deliveryAddress,
             returnTime
         )
+
         if (validate.length === 0) {
             if (vehicle === "car") {
                 vehicle = "🚗"
@@ -446,13 +442,10 @@ $("document").ready(async function () {
             alert("You must select at least one delivery to clear.");
         }
 
-        // Grab the ID from the selected checkbox
+        // REMOVE DELIVERY OBJECT FROM ARRAY AND TABLE
         $("#deliveryTable input:checked").each(function () {
             let id = $(this).parent().parent().attr("id");
-
-            // Remove the delivery from the array
             deliveryDrivers.splice(deliveryDrivers.indexOf(id), 1)
-            // Remove the delivery from the table
             $(this).parent().parent().remove();
         });
     });
