@@ -13,8 +13,8 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <img src="Company_logo_transparent.png" alt="logo" width="100px" height="85px" class="logo">
+<nav class="navbar navbar-expand">
+  <img src="Company_logo_transparent.png" alt="logo" width="135px" height="105px" class="logo">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -44,27 +44,27 @@
     </ul>
   </div>
 </nav>
-<div aria-live="polite" aria-atomic="true" style="position: absolute; min-height: 200px; z-index: 100; top: 0; right: 0;">
+<div aria-live="polite" aria-atomic="true" style="position: absolute; min-height: 200px; z-index: 100; top: 0; right: 10px;">
   <div id="toastDiv" style="position: relative;">
 
   </div>
 </div>
 <div class="container">
-
+<div style="display: flex; flex-direction: column;">
+  <h3>Reception Management Dashboard Staff</h3>
   <div id="divStaffMembers">
-    <h3>Reception Management Dashboard Staff</h3>
-    <table class="table table-striped" id="staffMemberTable">
+    <table class="table table-striped table-hover table-bordered rounded rounded-sm table-separate rounded-table" id="staffMemberTable">
       <thead>
         <tr>
-          <th>Check</th>
-          <th>Picture</th>
-          <th>Name</th>
-          <th>Surname</th>
-          <th>Email Address</th>
-          <th>Status</th>
-          <th>Out Time</th>
-          <th>Duration</th>
-          <th>Expected Return Time</th>
+          <th>Check:</th>
+          <th>Picture:</th>
+          <th>Name:</th>
+          <th>Surname:</th>
+          <th>Email Address:</th>
+          <th>Status:</th>
+          <th>Out Time:</th>
+          <th>Duration:</th>
+          <th>Expected Return Time:</th>
         </tr>
       </thead>
         <tbody>
@@ -75,11 +75,12 @@
   <button id="checkOut" class="btn btn-danger float-start">Check Out</button>
   <button id="checkIn" class="btn btn-success float-end">Check In</button>
   </div>
+</div>
 
-
+<div style="display: flex; flex-direction: column;">
+  <h3>Schedule Delivery</h3>
   <div id="divScheduleDelivery">
-    <h3>Schedule Delivery</h3>
-    <table class="table table-striped table-bordered" id="scheduleTable">
+    <table class="table table-striped table-hover table-bordered rounded rounded-sm table-separate rounded-table" id="scheduleTable">
       <thead>
         <tr>
           <th>Vehicle:</th>
@@ -93,7 +94,7 @@
         <tr id="inputDeliveryRow">
           <td>
             <label for="vehicleInput"></label>
-            <input type="text" id="vehicleInput" name="vehicleInput" placeholder="Car/Motorcycle/Bicycle">
+            <input type="text" id="vehicleInput" name="vehicleInput" placeholder="Car/Motorcycle">
           </td>
           <td>
             <label for="nameInput"></label>
@@ -113,15 +114,20 @@
             </td>
             <td>
             <label for="returnTimeInput"></label>
-            <input type="text" id="returnTimeInput" name="returnTimeInput" placeholder="12:30">
+            <input type="text" id="returnTimeInput" name="returnTimeInput" placeholder="HH:MM">
             </td>
         </tr>
     </table>
-    <button id="addDelivery" class="btn btn-success">Add</button>
   </div>
+  <div id="scheduleButtons">
+  <button id="addDelivery" class="btn btn-success float-end">Add</button>
+  </div>
+</div>
+
+<div style="display: flex; flex-direction: column;">
+  <h3>Delivery Board</h3>
   <div id="divDeliveryBoard">
-    <h3>Delivery Board</h3>
-    <table class="table table-striped" id="deliveryTable">
+    <table class="table table-striped table-hover table-bordered rounded rounded-sm table-separate rounded-table" id="deliveryTable">
         <thead>
           <tr>
             <th>Check</th>
@@ -136,15 +142,15 @@
         <tbody>
         </tbody>
     </table>
-    <button id="clearDelivery" class="btn btn-danger">Clear</button>
   </div>
-
-  <div>
+  <div id="deliveryButtons">
+  <button id="clearDelivery" class="btn btn-danger float-end">Clear</button>
+  </div>
+</div>
+</div>
+  <div class="footer">
     <p id="date"></p>
   </div>
-<button type="button" class="btn btn-primary" id="liveToastBtn">Show live toast</button>
-
-</div>
 
 
 
