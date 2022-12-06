@@ -20,21 +20,25 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-      </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
+        <a class="nav-link" href="#">Dashboard</a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown
-        </a>
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-bs-toggle="dropdown" aria-expanded="false">Inventory</a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">Search</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
+          <a class="dropdown-item" href="#">Add</a>
+          <a class="dropdown-item" href="#">Remove</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false">Orders</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Search</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Add</a>
+          <a class="dropdown-item" href="#">Remove</a>
         </div>
       </li>
     </ul>
@@ -43,7 +47,7 @@
 <div class="container">
   <div id="divStaffMembers">
     <h3>Reception Management Dashboard Staff</h3>
-    <table class="table table-striped" id="employeeTable">
+    <table class="table table-striped" id="staffMemberTable">
       <thead>
         <tr>
           <th>Check</th>
@@ -107,13 +111,14 @@
             </td>
         </tr>
     </table>
-    <button id="addDelivery">ADD</button>
+    <button id="addDelivery" class="btn btn-success">Add</button>
   </div>
   <div id="divDeliveryBoard">
     <h3>Delivery Board</h3>
-    <table class="table" id="deliveryTable">
+    <table class="table table-striped" id="deliveryTable">
         <thead>
           <tr>
+            <th>Check</th>
             <th>Vehicle:</th>
             <th>Name:</th>
             <th>Surname:</th>
@@ -125,11 +130,18 @@
         <tbody>
         </tbody>
     </table>
+    <button id="clearDelivery" class="btn btn-danger">Clear</button>
   </div>
 
   <div>
     <p id="date"></p>
   </div>
+</div>
+
+<button type="button" class="btn btn-primary" id="liveToastBtn">Show live toast</button>
+
+<div id="toastDiv">
+
 </div>
 
 

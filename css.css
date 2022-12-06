@@ -13,6 +13,10 @@
     background-color: #f0f0f0;
 }
 
+.navbar {
+    background-color: #0E8EA8;
+}
+
 #divStaffMembers {
     position: relative;
 }
@@ -43,6 +47,7 @@ td, tr, input {
 
 h3 {
     text-align: center;
+    margin: 10px;
 }
 thead {
     background-color: #0E8EA8;
