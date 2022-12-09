@@ -75,7 +75,7 @@ class DeliveryDriver extends Employee {
 function spawnStaffToast(object) {
     if(object.isLate === false) {
     $("#toastDiv").append(`
-        <div id="liveToast${object.id}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div id="liveToast${object.id}" class="toast" style="backdrop-filter: blur(10px);" role="alert" aria-live="assertive" aria-atomic="true">
           <div class="toast-header">
             <img src="${object.picture}" class="rounded me-2" height="40px" width="40px" alt="staffPicture">
             <strong class="me-auto">Staff member is late!</strong>
@@ -100,7 +100,7 @@ function spawnDeliveryToast(object) {
         $("#toastDiv").append(`
         <div id="liveToast${object.id}" class="toast" style="backdrop-filter: blur(10px);" role="alert" aria-live="assertive" aria-atomic="true">
           <div class="toast-header">
-            <p class="me-auto text-center">${object.vehicle}</p>
+            <p class="me-auto">${object.vehicle}</p>
             <strong class="me-auto">Delivery is late!</strong>
             <small>${digitalClock("time")}</small>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -346,7 +346,7 @@ $("document").ready(async function () {
     // POPULATE STAFF TABLE
     populateStaffTable();
 
-    // CHECK IF STAFF MEMBER IS RUNNING LATE
+    // CHECK IF STAFF MEMBER OR DELIVERY IS RUNNING LATE
     setInterval(staffMemberRunningLate, deliveryDriverRunningLate, 1000);
 
     // CHECK OUT A STAFF MEMBER AND UPDATE THE TABLE
@@ -411,9 +411,9 @@ $("document").ready(async function () {
 
         if (validate.length === 0) {
             if (vehicle === "car") {
-                vehicle = "🚗"
+                vehicle = "<i class=\"fas fa-car\"></i>"
             } else if (vehicle === "motorcycle") {
-                vehicle = "🏍️"
+                vehicle = "<i class=\"fa-solid fa-motorcycle\"></i>"
             }
 
             const newDeliveryDriver = new DeliveryDriver(
@@ -425,9 +425,11 @@ $("document").ready(async function () {
                 deliveryAddress,
                 returnTime
             );
+
             newDeliveryDriver.deliveryDriverIsLate(newDeliveryDriver)
             addDeliveryToTable(newDeliveryDriver);
             deliveryDrivers.push(newDeliveryDriver)
+
         } else {
             for (let i = 0; i < validate.length; i++) {
                 alert(validate[i])
