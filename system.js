@@ -29,6 +29,7 @@ class StaffMember extends Employee {
             return this.checkOut();
         }
 
+        // CALCULATE TIME
         const outTime = new Date();
         const calculatedTime = calculateTime(timeOutOfOffice);
         const ERT = calculatedTime.ERT
@@ -75,7 +76,7 @@ class DeliveryDriver extends Employee {
 function spawnStaffToast(object) {
     if(object.isLate === false) {
     $("#toastDiv").append(`
-        <div id="liveToast${object.id}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div id="liveToast${object.id}" class="toast" style="backdrop-filter: blur(10px);" role="alert" aria-live="assertive" aria-atomic="true">
           <div class="toast-header">
             <img src="${object.picture}" class="rounded me-2" height="40px" width="40px" alt="staffPicture">
             <strong class="me-auto">Staff member is late!</strong>
@@ -99,8 +100,8 @@ function spawnDeliveryToast(object) {
     if(object.isLate === false) {
         $("#toastDiv").append(`
         <div id="liveToast${object.id}" class="toast" style="backdrop-filter: blur(10px);" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="toast-header">
-            <p class="me-auto text-center">${object.vehicle}</p>
+          <div class="toast-header mx-auto align-items-center">
+            <p class="mx-auto iconPos">${object.vehicle}</p>
             <strong class="me-auto">Delivery is late!</strong>
             <small>${digitalClock("time")}</small>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -219,9 +220,12 @@ function deliveryDriverRunningLate() {
             currentTime = currentTime.split(":");
             const currentHourInt = parseInt(currentTime[0]);
             const currentMinuteInt = parseInt(currentTime[1]);
-            const returnTime = deliveryDriver.returnTime
-            if(currentMinuteInt > ERTMinuteInt) {
-                if (currentHourInt > ERTHourInt || currentHourInt === ERTHourInt) {
+            let returnTime = deliveryDriver.returnTime
+            returnTime = returnTime.split(":");
+            const returnTimeHourInt = parseInt(returnTime[0]);
+            const returnTimeMinuteInt = parseInt(returnTime[1]);
+            if(currentMinuteInt > returnTimeMinuteInt) {
+                if (currentHourInt > returnTimeHourInt || currentHourInt === returnTimeHourInt) {
                     deliveryDriver.deliveryDriverIsLate(deliveryDriver);
                 }
             }
@@ -335,7 +339,7 @@ function validateDelivery(vehicle, name, surname, telephone, deliverAddress, ret
 
 $("document").ready(async function () {
 
-    // Clock
+    // CLOCK
     setInterval(function () {
         $("#date").html(digitalClock("dateTime"));
     }, 1000);
@@ -346,8 +350,9 @@ $("document").ready(async function () {
     // POPULATE STAFF TABLE
     populateStaffTable();
 
-    // CHECK IF STAFF MEMBER IS RUNNING LATE
-    setInterval(staffMemberRunningLate, deliveryDriverRunningLate, 1000);
+    // CHECK IF STAFF MEMBER OR DELIVERY IS RUNNING LATE
+    setInterval(staffMemberRunningLate, 1000);
+    setInterval(deliveryDriverRunningLate, 1000);
 
     // CHECK OUT A STAFF MEMBER AND UPDATE THE TABLE
     $("#checkOut").click(function () {
@@ -361,7 +366,6 @@ $("document").ready(async function () {
             const id = $(this).parent().parent().attr("id")
             const staffMember = staffMembers.find(staffMember => staffMember.id === parseInt(id));
             staffMember.checkOut();
-            staffMember.staffMemberIsLate(staffMember);
             $("#status" + id).html(staffMember.status);
             $("#outTime" + id).html(staffMember.outTime);
             $("#duration" + id).html(staffMember.duration);
@@ -374,7 +378,7 @@ $("document").ready(async function () {
     $("#checkIn").click(function () {
         let checked = $("input:checked").length;
         if (!checked) {
-            console.log("You must select at least one staff member to check in.");
+            alert("You must select at least one staff member to check in.");
         }
 
         // CHECK IN SELECTED STAFF MEMBERS
@@ -411,9 +415,9 @@ $("document").ready(async function () {
 
         if (validate.length === 0) {
             if (vehicle === "car") {
-                vehicle = "🚗"
+                vehicle = "<i class=\"fas fa-car fa-xl\"></i>"
             } else if (vehicle === "motorcycle") {
-                vehicle = "🏍️"
+                vehicle = "<i class=\"fa-solid fa-motorcycle fa-xl\"></i>"
             }
 
             const newDeliveryDriver = new DeliveryDriver(
@@ -425,9 +429,10 @@ $("document").ready(async function () {
                 deliveryAddress,
                 returnTime
             );
-            newDeliveryDriver.deliveryDriverIsLate(newDeliveryDriver)
+
             addDeliveryToTable(newDeliveryDriver);
             deliveryDrivers.push(newDeliveryDriver)
+
         } else {
             for (let i = 0; i < validate.length; i++) {
                 alert(validate[i])

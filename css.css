@@ -14,6 +14,20 @@
     overflow: hidden;
 }
 
+.navbar {
+    font-family: Consolas;
+}
+
+.nav-link {
+    background-color: #0E8EA8;
+    color: #fff;
+}
+
+.dropdown-menu {
+    background-color: #83D1E1;
+}
+
+
 .footer {
     bottom: 0;
     width: 100%;
@@ -24,69 +38,59 @@
 
 }
 
-p {
-    font-family: Calibri;
+.iconPos {
+    text-align: center;
+    vertical-align: middle;
+    margin-top: 20px;
 }
 
-/*.navbar {*/
-/*    font-family: Consolas;*/
-/*}*/
-
-/*.nav-link {*/
-/*    background-color: #83D1E1;*/
-/*    color: #212529;*/
-/*}*/
-
-/*.dropdown-menu {*/
-/*    background-color: #0E8EA8;*/
-/*}*/
-
-
-/*#divStaffMembers, #divDeliveryBoard, #divScheduleDelivery {*/
-/*    border-collapse: separate;*/
-/*    position: relative;*/
-/*    border: 1px solid #0E8EA8;*/
-/*    border-radius: 5px;*/
-/*    overflow: hidden;*/
-/*}*/
-
-#staffMemberTable {
-    border-radius: 5px !important;
+p {
+    font-family: Calibri;
+    color: #212529;
 }
 
 #date {
     text-align: right;
     margin-right: 15px;
 }
-
-.rounded-table {
-    border-radius: 5px !important
+.none-margin {
+    margin-bottom: 0!important;
 }
 
-/*.table {*/
-/*    border-collapse: separate;*/
-/*    margin-bottom: 0px;*/
-/*}*/
-
-td, tr {
+table.table tr {
     text-align: center;
-    vertical-align: middle;
+    vertical-align: middle
 }
 
-thead {
+table.table thead {
     background-color: #0E8EA8;
     color: #fff;
     font-family: Consolas;
+    height: 20px;
 }
 
-td {
-    background-color: #83D1E1;
+.table-bordered {
+    border: 1px solid #212529;
+}
+
+table.table td {
     color: #212529;
+    background-color: #83D1E1;
     font-family: Calibri, Arial, serif;
 }
 
 h3 {
     text-align: center;
+}
+
+#divStaffMembers, #divDeliveryBoard, #divScheduleDelivery {
+    border: 1px solid #212529;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+table.table {
+    overflow: hidden;
 }
 
 #staffButtons, #deliveryButtons, #scheduleButtons {
