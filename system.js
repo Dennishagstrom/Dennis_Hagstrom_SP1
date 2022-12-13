@@ -29,6 +29,7 @@ class StaffMember extends Employee {
             return this.checkOut();
         }
 
+        // CALCULATE TIME
         const outTime = new Date();
         const calculatedTime = calculateTime(timeOutOfOffice);
         const ERT = calculatedTime.ERT
@@ -219,9 +220,12 @@ function deliveryDriverRunningLate() {
             currentTime = currentTime.split(":");
             const currentHourInt = parseInt(currentTime[0]);
             const currentMinuteInt = parseInt(currentTime[1]);
-            const returnTime = deliveryDriver.returnTime
-            if(currentMinuteInt > ERTMinuteInt) {
-                if (currentHourInt > ERTHourInt || currentHourInt === ERTHourInt) {
+            let returnTime = deliveryDriver.returnTime
+            returnTime = returnTime.split(":");
+            const returnTimeHourInt = parseInt(returnTime[0]);
+            const returnTimeMinuteInt = parseInt(returnTime[1]);
+            if(currentMinuteInt > returnTimeMinuteInt) {
+                if (currentHourInt > returnTimeHourInt || currentHourInt === returnTimeHourInt) {
                     deliveryDriver.deliveryDriverIsLate(deliveryDriver);
                 }
             }
@@ -335,7 +339,7 @@ function validateDelivery(vehicle, name, surname, telephone, deliverAddress, ret
 
 $("document").ready(async function () {
 
-    // Clock
+    // CLOCK
     setInterval(function () {
         $("#date").html(digitalClock("dateTime"));
     }, 1000);
@@ -347,7 +351,8 @@ $("document").ready(async function () {
     populateStaffTable();
 
     // CHECK IF STAFF MEMBER OR DELIVERY IS RUNNING LATE
-    setInterval(staffMemberRunningLate, deliveryDriverRunningLate, 1000);
+    setInterval(staffMemberRunningLate, 1000);
+    setInterval(deliveryDriverRunningLate, 1000);
 
     // CHECK OUT A STAFF MEMBER AND UPDATE THE TABLE
     $("#checkOut").click(function () {
@@ -361,7 +366,6 @@ $("document").ready(async function () {
             const id = $(this).parent().parent().attr("id")
             const staffMember = staffMembers.find(staffMember => staffMember.id === parseInt(id));
             staffMember.checkOut();
-            staffMember.staffMemberIsLate(staffMember);
             $("#status" + id).html(staffMember.status);
             $("#outTime" + id).html(staffMember.outTime);
             $("#duration" + id).html(staffMember.duration);
@@ -374,7 +378,7 @@ $("document").ready(async function () {
     $("#checkIn").click(function () {
         let checked = $("input:checked").length;
         if (!checked) {
-            console.log("You must select at least one staff member to check in.");
+            alert("You must select at least one staff member to check in.");
         }
 
         // CHECK IN SELECTED STAFF MEMBERS
@@ -426,7 +430,6 @@ $("document").ready(async function () {
                 returnTime
             );
 
-            newDeliveryDriver.deliveryDriverIsLate(newDeliveryDriver)
             addDeliveryToTable(newDeliveryDriver);
             deliveryDrivers.push(newDeliveryDriver)
 
