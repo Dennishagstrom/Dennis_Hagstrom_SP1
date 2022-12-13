@@ -4,7 +4,7 @@
 }
 @font-face {
     font-family: "Consolas";
-    src: url("fonts/CONSOLA.ttf") format("truetype");
+    src: url("fonts/CONSOLA.TTF") format("truetype");
 }
 
 .container {
