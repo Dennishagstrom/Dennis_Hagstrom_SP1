@@ -99,8 +99,8 @@ function spawnDeliveryToast(object) {
     if(object.isLate === false) {
         $("#toastDiv").append(`
         <div id="liveToast${object.id}" class="toast" style="backdrop-filter: blur(10px);" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="toast-header">
-            <p class="me-auto">${object.vehicle}</p>
+          <div class="toast-header mx-auto align-items-center">
+            <p class="mx-auto iconPos">${object.vehicle}</p>
             <strong class="me-auto">Delivery is late!</strong>
             <small>${digitalClock("time")}</small>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -411,9 +411,9 @@ $("document").ready(async function () {
 
         if (validate.length === 0) {
             if (vehicle === "car") {
-                vehicle = "<i class=\"fas fa-car\"></i>"
+                vehicle = "<i class=\"fas fa-car fa-xl\"></i>"
             } else if (vehicle === "motorcycle") {
-                vehicle = "<i class=\"fa-solid fa-motorcycle\"></i>"
+                vehicle = "<i class=\"fa-solid fa-motorcycle fa-xl\"></i>"
             }
 
             const newDeliveryDriver = new DeliveryDriver(

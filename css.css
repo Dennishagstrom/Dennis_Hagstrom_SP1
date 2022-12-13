@@ -38,13 +38,14 @@
 
 }
 
-p {
-    font-family: Calibri;
-}
-
-.icon {
+.iconPos {
     text-align: center;
     vertical-align: middle;
+    margin-top: 20px;
+}
+
+p {
+    font-family: Calibri;
 }
 
 #date {
