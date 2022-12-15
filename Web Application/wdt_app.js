@@ -11,7 +11,7 @@ class StaffMember extends Employee {
         this.id = id;
         this.picture = picture;
         this.email = email;
-        this.status = "Not Assigned";
+        this.status = "In";
         this.outTime = "";
         this.duration = "";
         this.ERT = "";
@@ -20,7 +20,7 @@ class StaffMember extends Employee {
 
     checkOut() {
         const timeOutOfOffice = prompt(
-            `How long will ${this.name} be out of the office? Please enter in (HH:MM). Up to 24H.`);
+            `How long will ${this.name} be out of the office? Please enter time in (HH:MM).`);
         const timeAway = timeOutOfOffice.split(":");
 
         // Validate input HH:MM from user prompt
@@ -234,13 +234,13 @@ function deliveryDriverRunningLate() {
 }
 
 // DATABASE
-const employees = {
+const db = {
     "staffMembers": [],
     "deliveryDrivers": []
 };
 
-const staffMembers = employees.staffMembers;
-const deliveryDrivers = employees.deliveryDrivers;
+const staffMembers = db.staffMembers;
+const deliveryDrivers = db.deliveryDrivers;
 
 // ALL UNIQUE ID'S
 const all_id = [];
@@ -270,12 +270,12 @@ async function staffUserGet() {
                     const surname = employee.name.last;
                     const email = employee.email;
                     const newEmployee = new StaffMember(id, name, surname, picture, email);
-                    employees.staffMembers.push(newEmployee);
+                    db.staffMembers.push(newEmployee);
                 }
             }
         )
     }
-    return employees;
+    return db;
 }
 
 function populateStaffTable() {
