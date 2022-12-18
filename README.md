@@ -1,10 +1,10 @@
 #######################################################################
-#                  README FOR HOW TO USE THIS SYSTEM.                 #
-#                                                                     #
-# You do not need to install anything to be able to run this project. #
-#                                                                     #
-# Created by: Dennis Lars William Hagström.                           #
-# Semester Project 2022 @ Noroff University - Backend Developement.   #
+|                  README FOR HOW TO USE THIS SYSTEM.                 |
+|                                                                     |
+| You do not need to install anything to be able to run this project. |
+|                                                                     |
+| Created by: Dennis Lars William Hagström.                           |
+| Semester Project 2022 @ Noroff University - Backend Developement.   |
 #######################################################################
 
 All you have to do is: 
