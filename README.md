@@ -1,13 +1,11 @@
-#######################################################################
-|                  README FOR HOW TO USE THIS SYSTEM.                 |
-|                                                                     |
-| You do not need to install anything to be able to run this project. |
-|                                                                     |
-| Created by: Dennis Lars William Hagström.                           |
-| Semester Project 2022 @ Noroff University - Backend Developement.   |
-#######################################################################
+README FOR HOW TO USE THIS SYSTEM
 
-All you have to do is: 
+Created by: Dennis Lars William Hagström.
+Semester Project 2022 @ Noroff University - Backend Development.
+
+You do not need to install anything to be able to run this project.
+
+All you have to do is:
 
   1. Clone the repository into your code editor, or download the project.
   2. Open the "index.html" file located in the "Web Application" folder.
