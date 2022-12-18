@@ -448,10 +448,12 @@ $("document").ready(async function () {
         }
 
         // REMOVE DELIVERY OBJECT FROM ARRAY AND TABLE
-        $("#deliveryTable input:checked").each(function () {
-            let id = $(this).parent().parent().attr("id");
-            deliveryDrivers.splice(deliveryDrivers.indexOf(id), 1)
-            $(this).parent().parent().remove();
-        });
+        if (confirm("Are you sure you want to clear selected rows?")) {
+            $("#deliveryTable input:checked").each(function () {
+                let id = $(this).parent().parent().attr("id");
+                deliveryDrivers.splice(deliveryDrivers.indexOf(id), 1)
+                $(this).parent().parent().remove();
+            });
+        }
     });
 });
