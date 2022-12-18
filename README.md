@@ -27,4 +27,7 @@ All you have to do is:
   You will be notified if one of the staff members or the delivery drivers are running late.
 
 
+The documentation can be found in the "Documentation" folder.
+
+
 Enjoy!
